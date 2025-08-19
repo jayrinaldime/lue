@@ -8,3 +8,4 @@ Rich terminal UI with smart persistence and cross-platform support.
 
 __version__ = "0.1.0"
 __author__ = "Lue Development Team"
+

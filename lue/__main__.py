@@ -11,9 +11,9 @@ import platform
 import platformdirs
 import logging
 from rich.console import Console
-from .reader import Lue
-from . import config
-from .tts_manager import TTSManager, get_default_tts_model_name
+from reader import Lue
+import config
+from tts_manager import TTSManager, get_default_tts_model_name
 
 def setup_logging():
     """Set up file-based logging for the application."""
@@ -36,25 +36,23 @@ def setup_environment():
     os.environ["HF_HUB_ETAG_TIMEOUT"] = "10"
     os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "10"
     os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+    os.environ["OPENAI_BASE_URL"] = "http://127.0.0.1:3214/v1"
+    os.environ["OPENAI_API_KEY"] = "abc"
     if platform.system() == "Darwin" and platform.processor() == "arm":
         os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 
-async def main():
-    tts_manager = TTSManager()
-    available_tts = tts_manager.get_available_tts_names()
-    default_tts = get_default_tts_model_name(available_tts)
-
+def args_parser(available_tts, default_tts):
     parser = argparse.ArgumentParser(
         description="A terminal-based eBook reader with TTS",
         add_help=False  # Disable automatic help to add custom one
     )
-    
+
     parser.add_argument(
         '-h', '--help',
         action='help',
         help='Show this help message and exit'
     )
-    
+
     parser.add_argument("file_path", help="Path to the eBook file (.epub, .pdf, .txt, etc.)")
     parser.add_argument(
         "-f",
@@ -62,11 +60,11 @@ async def main():
         action="store_true",
         help="Enable PDF text cleaning filters",
     )
-    
+
     parser.add_argument(
         "-o", "--over", type=float, help="Seconds of overlap between sentences"
     )
-    
+
     if available_tts:
         parser.add_argument(
             "-t",
@@ -85,6 +83,14 @@ async def main():
             "--lang",
             help="Specify the language for the TTS model",
         )
+    return parser
+
+async def main():
+    tts_manager = TTSManager()
+    available_tts = tts_manager.get_available_tts_names()
+    default_tts = get_default_tts_model_name(available_tts)
+    parser = args_parser(available_tts, default_tts)
+
     args = parser.parse_args()
 
     if args.over is not None:

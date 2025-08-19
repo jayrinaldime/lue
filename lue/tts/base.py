@@ -95,5 +95,5 @@ class TTSBase(ABC):
         Returns:
             float: Overlap seconds specific to this TTS model, or None to use default
         """
-        from .. import config
+        import config
         return config.TTS_OVERLAP_SECONDS.get(self.name)

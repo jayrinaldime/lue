@@ -3,7 +3,7 @@
 import os
 import json
 import re
-from . import config
+import config
 
 
 def get_progress_file_path(book_title):

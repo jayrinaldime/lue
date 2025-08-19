@@ -4,17 +4,19 @@ import os
 from platformdirs import user_data_dir, user_cache_dir
 
 # Default TTS model
-DEFAULT_TTS_MODEL = "edge"
+DEFAULT_TTS_MODEL = "openai"
 
 # Default voices for TTS models
 TTS_VOICES = {
     "edge": "en-US-JennyNeural",
     "kokoro": "af_heart",
+    "openai": "echo"
 }
 
 # Language codes for TTS models that require them
 TTS_LANGUAGE_CODES = {
     "kokoro": "a",  # a=English, e=Spanish, j=Japanese, etc.
+    "openai": "a",
 }
 
 # TTS model-specific seconds of overlap between sentences (overrides default OVERLAP_SECONDS if specified)

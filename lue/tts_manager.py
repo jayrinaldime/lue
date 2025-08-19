@@ -5,8 +5,8 @@ import inspect
 import logging
 from pathlib import Path
 from rich.console import Console
-from .tts.base import TTSBase
-from . import config
+from tts.base import TTSBase
+import config
 
 
 class TTSManager:
@@ -33,15 +33,18 @@ class TTSManager:
         for file_path in tts_dir.glob("*_tts.py"):
             module_name = file_path.stem
             try:
-                module = importlib.import_module(f".tts.{module_name}", package="lue")
-                for name, obj in inspect.getmembers(module, inspect.isclass):
-                    if (issubclass(obj, TTSBase) and 
-                        not inspect.isabstract(obj) and 
-                        obj is not TTSBase):
-                        model_name = module_name.replace("_tts", "")
-                        self._models[model_name] = obj
-                        logging.info(f"Discovered TTS model: {model_name}")
-                        break
+                from tts.openai_tts import OpenAITTS
+                self._models["openai"] = OpenAITTS
+                logging.info(f"Discovered TTS model: {OpenAITTS}")
+                # module = importlib.import_module(f".tts.{module_name}", package="lue")
+                # for name, obj in inspect.getmembers(module, inspect.isclass):
+                #     if (#issubclass(obj, TTSBase) and
+                #         not inspect.isabstract(obj) and
+                #         obj is not TTSBase and obj is not Console):
+                #         model_name = module_name.replace("_tts", "")
+                #         self._models[model_name] = obj
+                #         logging.info(f"Discovered TTS model: {model_name}")
+
             except Exception as e:
                 logging.error(f"Failed to load TTS module {module_name}: {e}", exc_info=True)
 

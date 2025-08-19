@@ -5,7 +5,7 @@ import re
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-from . import config, content_parser
+import config, content_parser
 
 # ================================
 # CENTRALIZED UI CONFIGURATION
